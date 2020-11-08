@@ -1,7 +1,7 @@
 import multiprocessing as mp
 import time
 from opencv import *
-from scene import *
+# from scene import *
 
 if __name__ == '__main__':
     camera = Camera()
@@ -9,9 +9,8 @@ if __name__ == '__main__':
     process.start()
 
     # view = Scene()
-
     # ball = Ball(view.floor, view.net)
-
     # ball.throwBall()
 
     process.join()
+    print("done")

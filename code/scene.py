@@ -47,4 +47,7 @@ class Ball:
 
             t += dt
 
+
+if __name__ == '__main__':
+    print("test import")
 #print(t, ball.pos.y)
