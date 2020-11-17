@@ -13,16 +13,10 @@ class Scene:
         W, 0.01, L), texture=textures.metal)
     net = box(pos=vec(0, 2.5, 0.1), size=vec(
         W, 5, 0.2), texture=textures.metal)
+    player = box(pos=vec(0, 1.5, 9), size=vec(2, 3, 2), texture=textures.wood)
 
-
-class Ball:
-    W = 12                 # 地板寬度
-    L = 24                # 地板長度
-    g = 9.8               # 重力加速度 9.8 m/s^2
-
-    def __init__(self, floor, net):
-        self.floor = floor
-        self.net = net
+    # 原點
+    dot = sphere(pos=vec(0, 0, 0), radius=1, color=color.blue)
 
     def throwBall(self):
         size = 1.5            # 小球半徑
@@ -51,21 +45,17 @@ class Ball:
 
             t += dt
 
-
-class Player:
-    pikachu = box(pos=vec(0, 1.5, 9), size=vec(2, 3, 2), texture=textures.wood)
-
-    # def __init__(self, floor, net):
-    #     self.floor = floor
-    #     self.net = net
-
-    # def move(self):
+    # def playerMove(self):
+    #     self.view.center = self.player.pos
 
 
 if __name__ == '__main__':
     print("test import")
 
-    scene = Scene()
-    player = Player()
-
-# ball.pos.z > -self.L/2
+    # scene = Scene()
+    # while 1:
+    #     print("test")
+    #     print(scene.view.center)
+    #     scene.view.center += vec(0, 0, 1)
+    #     # scene.playerMove()
+    #     sleep(1)

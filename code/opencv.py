@@ -45,7 +45,7 @@ class Camera:
                 self.max_y = _y
                 self.max_w = _w
                 self.max_h = _h
-            print(self.max_w * self.max_h)
+            print(self.max_w * self.max_h)  # 臉的框框大小
 
             # webcam畫面
             frame = cv2.rectangle(
@@ -67,8 +67,9 @@ class Camera:
 
 
 if __name__ == '__main__':
-    camera = Camera()
-    camera.captureFace()
+    print("test opencv")
+    # camera = Camera()
+    # camera.captureFace()
 
 
 # cv2.imshow("gray", gray)
