@@ -7,8 +7,12 @@ class Camera:
     max_y = 0
     max_w = 0
     max_h = 0
+    center_x = 320
+    center_y = 240
 
     def captureFace(self):
+        f = open("data.txt", mode="w")
+
         faceCascade = cv2.CascadeClassifier(
             "./haarcascade_frontalface_default.xml")
 
@@ -45,7 +49,14 @@ class Camera:
                 self.max_y = _y
                 self.max_w = _w
                 self.max_h = _h
+                self.center_x = self.max_x + self.max_w / 2
+                self.center_y = self.max_y + self.max_h / 2
             print(self.max_w * self.max_h)  # 臉的框框大小
+
+            f = open("data.txt", mode="w")
+            f.write(
+                str(self.center_x) + "\n" + str(self.center_y))
+            f.close()
 
             # webcam畫面
             frame = cv2.rectangle(
@@ -68,8 +79,8 @@ class Camera:
 
 if __name__ == '__main__':
     print("test opencv")
-    # camera = Camera()
-    # camera.captureFace()
+    camera = Camera()
+    camera.captureFace()
 
 
 # cv2.imshow("gray", gray)

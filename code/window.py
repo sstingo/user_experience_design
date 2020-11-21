@@ -30,6 +30,8 @@ class Scene:
                       v=vec(0, v0 * sin(theta), -v0 * cos(theta)), a=vec(0, -self.g, 0))
 
         while(1):
+            scene.playerMove()
+
             rate(1000)
             ball.v += ball.a * dt
             ball.pos += ball.v * dt
@@ -45,12 +47,29 @@ class Scene:
 
             t += dt
 
-    # def playerMove(self):
-    #     self.view.center = self.player.pos
+    def playerMove(self):
+        v = 5
+        dt = 0.001
+
+        f = open("data.txt", mode="r")
+        x = float(f.readline())
+        y = float(f.readline())
+        print("cam: " + str(x))
+        # print(y)
+        if(x < 320 or self.player.pos.x > 0):
+            self.player.pos.x -= v * dt
+            print(str(x / -100))
+        elif(self.player.pos.x < 6):
+            self.player.pos.x += v * dt
+            print(str(x / 200))
+
+        f.close()
 
 
 if __name__ == '__main__':
     print("test import")
+    scene = Scene()
+    scene.throwBall()
 
     # scene = Scene()
     # while 1:
