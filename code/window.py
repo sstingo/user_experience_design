@@ -20,56 +20,59 @@ class Scene:
 
     def throwBall(self):
         size = 1.5            # 小球半徑
-        v0 = 10               # 小球初速
+        v0 = 10.0             # 小球初速
         theta = radians(60)   # 小球抛射仰角, 用 radians 將單位轉為弧度
-        t = 0                 # 時間
+        t = 0.0               # 時間
         dt = 0.001            # 時間間隔
         i = 0                 # 小球撞地板次數
 
-        ball = sphere(pos=vec(0, 5, self.L/4), radius=size, color=color.red, make_trail=True,
-                      v=vec(0, v0 * sin(theta), -v0 * cos(theta)), a=vec(0, -self.g, 0))
+        ball = sphere(pos=vec(0, 5, self.L/4), radius=size,
+                      color=color.red, make_trail=True,)
+        ball_v = vec(0, v0 * sin(theta), -v0 * cos(theta))
+        ball_a = vec(0, -self.g, 0)
 
         while(1):
             scene.playerMove()
 
             rate(1000)
-            ball.v += ball.a * dt
-            ball.pos += ball.v * dt
+            ball_v += ball_a * dt
+            ball.pos += ball_v * dt
 
-            if(ball.pos.y - self.floor.pos.y <= size + 0.5 * self.floor.height and ball.v.y < 0):
+            if(ball.pos.y - self.floor.pos.y <= size + 0.5 * self.floor.height and ball_v.y < 0):
                 i += 1
                 # print(i, t, ball.pos.z)
-                ball.v.y = -ball.v.y
+                ball_v.y = -ball_v.y
 
             if(ball.pos.z > self.L/2 or ball.pos.z < -self.L/2):  # 測試
-                ball.v.y = -ball.v.y
-                ball.v.z = -ball.v.z
+                ball_v.y = -ball_v.y
+                ball_v.z = -ball_v.z
 
             t += dt
 
     def playerMove(self):
-        v = 5
+        v = 5.0
         dt = 0.001
 
         f = open("data.txt", mode="r")
-        x = float(f.readline())
-        y = float(f.readline())
-        print("cam: " + str(x))
+        x = f.readline()
+        y = f.readline()
+        print("cam: " + x)
         # print(y)
-        if(x < 320 or self.player.pos.x > 0):
-            self.player.pos.x -= v * dt
-            print(str(x / -100))
-        elif(self.player.pos.x < 6):
-            self.player.pos.x += v * dt
-            print(str(x / 200))
+        # if(x < 320 or self.player.pos.x > 0):
+        #     self.player.pos.x -= v * dt
+        #     print(str(x / -100))
+        # elif(self.player.pos.x < 6):
+        #     self.player.pos.x += v * dt
+        #     print(str(x / 200))
 
         f.close()
 
 
 if __name__ == '__main__':
-    print("test import")
+    print("window main")
     scene = Scene()
     scene.throwBall()
+    # scene.playerMove()
 
     # scene = Scene()
     # while 1:

@@ -16,7 +16,7 @@ class Camera:
         faceCascade = cv2.CascadeClassifier(
             "./haarcascade_frontalface_default.xml")
 
-        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        cap = cv2.VideoCapture(0, cv2.CAP_ANY)
         if cap.isOpened():
             print("open")
         cap.set(3, 640)
@@ -30,6 +30,7 @@ class Camera:
             _h = 0
 
             success, frame = cap.read()
+            # print(success)
             frame = cv2.flip(frame, 1)
 
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -51,7 +52,7 @@ class Camera:
                 self.max_h = _h
                 self.center_x = self.max_x + self.max_w / 2
                 self.center_y = self.max_y + self.max_h / 2
-            print(self.max_w * self.max_h)  # 臉的框框大小
+            # print(self.max_w * self.max_h)  # 臉的框框大小
 
             f = open("data.txt", mode="w")
             f.write(
@@ -78,7 +79,7 @@ class Camera:
 
 
 if __name__ == '__main__':
-    print("test opencv")
+    print("opencv main")
     camera = Camera()
     camera.captureFace()
 
