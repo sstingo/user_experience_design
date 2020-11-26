@@ -16,12 +16,13 @@ class Camera:
         faceCascade = cv2.CascadeClassifier(
             "./haarcascade_frontalface_default.xml")
 
-        cap = cv2.VideoCapture(0, cv2.CAP_ANY)
-        if cap.isOpened():
-            print("open")
-        cap.set(3, 640)
-        cap.set(4, 480)
-        cap.set(10, 100)
+        cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+        if not cap.isOpened():
+            print("Cannot open camera")
+            exit()
+        cap.set(3, 640)   # 寬
+        cap.set(4, 480)   # 高
+        cap.set(10, 100)  # 亮度
 
         while True:
             _x = 0
@@ -29,13 +30,14 @@ class Camera:
             _w = 0
             _h = 0
 
-            success, frame = cap.read()
-            # print(success)
+            # Read = Grab + Retrieve + Buffer (Block diagram)
+            success, frame = cap.retrieve(cap.grab())
+            print(success)
             frame = cv2.flip(frame, 1)
 
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            blurred = cv2.GaussianBlur(gray, (11, 11), 0)
-            binary = cv2.Canny(blurred, 20, 160)
+            # blurred = cv2.GaussianBlur(gray, (11, 11), 0)
+            # binary = cv2.Canny(blurred, 20, 160)
 
             faces = faceCascade.detectMultiScale(gray, 1.1, 4)
             for (x, y, w, h) in faces:
@@ -54,7 +56,8 @@ class Camera:
                 self.center_y = self.max_y + self.max_h / 2
             # print(self.max_w * self.max_h)  # 臉的框框大小
 
-            f = open("data.txt", mode="w")
+            # 寫檔
+            f = open("./data.txt", mode="w")
             f.write(
                 str(self.center_x) + "\n" + str(self.center_y))
             f.close()
@@ -65,10 +68,10 @@ class Camera:
             cv2.imshow("video", frame)
 
             # 臉的框框
-            face = np.zeros((480, 640, 3), np.uint8)
-            face = cv2.rectangle(
-                face, (self.max_x, self.max_y), (self.max_x+self.max_w, self.max_y+self.max_h), (255, 0, 0), 2)
-            cv2.imshow("face", face)
+            # face = np.zeros((480, 640, 3), np.uint8)
+            # face = cv2.rectangle(
+            #     face, (self.max_x, self.max_y), (self.max_x+self.max_w, self.max_y+self.max_h), (255, 0, 0), 2)
+            # cv2.imshow("face", face)
 
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 cv2.imwrite('captest.jpg', frame)

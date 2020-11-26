@@ -18,6 +18,7 @@ class Scene:
     # 原點
     dot = sphere(pos=vec(0, 0, 0), radius=1, color=color.blue)
 
+    # 小球移動(呼叫玩家)
     def throwBall(self):
         size = 1.5            # 小球半徑
         v0 = 10.0             # 小球初速
@@ -28,8 +29,8 @@ class Scene:
 
         ball = sphere(pos=vec(0, 5, self.L/4), radius=size,
                       color=color.red, make_trail=True,)
-        ball_v = vec(0, v0 * sin(theta), -v0 * cos(theta))
-        ball_a = vec(0, -self.g, 0)
+        ball_v = vec(0, v0 * sin(theta), -v0 * cos(theta))      # 小球速度(向量)
+        ball_a = vec(0, -self.g, 0)                             # 小球加速度(向量)
 
         while(1):
             scene.playerMove()
@@ -49,23 +50,31 @@ class Scene:
 
             t += dt
 
+    # 玩家移動
     def playerMove(self):
-        v = 5.0
+        v = 5.0  # 玩家速度
         dt = 0.001
+        center_x = 320
+        center_y = 240
 
-        f = open("data.txt", mode="r")
-        x = f.readline()
-        y = f.readline()
-        print("cam: " + x)
-        # print(y)
-        # if(x < 320 or self.player.pos.x > 0):
-        #     self.player.pos.x -= v * dt
-        #     print(str(x / -100))
-        # elif(self.player.pos.x < 6):
-        #     self.player.pos.x += v * dt
-        #     print(str(x / 200))
-
+        f = open("./data.txt", mode="r")
+        t_x = f.readline()
+        t_y = f.readline()
         f.close()
+        if(t_x != ''):
+            center_x = float(t_x)
+        if(t_y != ''):
+            center_y = float(t_y)
+        print(center_x)
+        print(center_y)
+        if(self.player.pos.x < -6 or self.player.pos.x > 6):
+            pass
+        elif(center_x == 320):
+            pass
+        elif(center_x < 320):
+            self.player.pos.x -= v * dt
+        else:
+            self.player.pos.x += v * dt
 
 
 if __name__ == '__main__':
@@ -73,11 +82,3 @@ if __name__ == '__main__':
     scene = Scene()
     scene.throwBall()
     # scene.playerMove()
-
-    # scene = Scene()
-    # while 1:
-    #     print("test")
-    #     print(scene.view.center)
-    #     scene.view.center += vec(0, 0, 1)
-    #     # scene.playerMove()
-    #     sleep(1)
