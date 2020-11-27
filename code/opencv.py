@@ -32,7 +32,7 @@ class Camera:
 
             # Read = Grab + Retrieve + Buffer (Block diagram)
             success, frame = cap.retrieve(cap.grab())
-            print(success)
+            # print(success)
             frame = cv2.flip(frame, 1)
 
             gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -65,6 +65,10 @@ class Camera:
             # webcam畫面
             frame = cv2.rectangle(
                 frame, (self.max_x, self.max_y), (self.max_x+self.max_w, self.max_y+self.max_h), (255, 0, 0), 2)
+            frame = cv2.line(frame, (280, 0), (280, 480),
+                             (0, 0, 255), 2)  # 中間範圍
+            frame = cv2.line(frame, (360, 0), (360, 480),
+                             (0, 0, 255), 2)  # 中間範圍
             cv2.imshow("video", frame)
 
             # 臉的框框
