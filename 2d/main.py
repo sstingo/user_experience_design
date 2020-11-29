@@ -1,27 +1,24 @@
 import cv2
 import numpy as np
 from PIL import Image
+import math
 
 # if __name__ == '__main__':
 # print("opencv main")
 
+# 神奇寶貝球
+ball_x = 320                   # 中心x
+ball_y = 50                    # 中心y
+ball_v = 0                     # 球的速度
+ball_theta = math.radians(90)  # 球的抛射仰角(弧度)
+
 # 最大框框+它的中心
 max_x = 0
 max_y = 0
-max_w = 0
+max_w = 5
 max_h = 0
 center_x = 320
 center_y = 240
-
-# # 神奇寶貝球
-# pokemon_ball = 'image/pokemon_ball.png'
-# ball = Image.open(pokemon_ball)
-# ball = ball.resize((64, 64))
-
-# # 皮卡丘耳朵
-# pikachu_ear = 'image/ear.png'
-# ear = Image.open(pikachu_ear)
-
 
 faceCascade = cv2.CascadeClassifier(
     "./haarcascade_frontalface_default.xml")
@@ -33,6 +30,8 @@ if not cap.isOpened():
 cap.set(3, 640)   # 寬
 cap.set(4, 480)   # 高
 cap.set(10, 100)  # 亮度
+
+gameover_flag = 0  # 遊戲結束標示
 
 while True:
     _x = 0
@@ -53,10 +52,7 @@ while True:
     success, frame = cap.retrieve(cap.grab())
     # print(success)
     frame = cv2.flip(frame, 1)
-
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    # blurred = cv2.GaussianBlur(gray, (11, 11), 0)
-    # binary = cv2.Canny(blurred, 20, 160)
 
     faces = faceCascade.detectMultiScale(gray, 1.1, 4)
     for (x, y, w, h) in faces:
@@ -85,16 +81,20 @@ while True:
 
     # 分數
     cv2.putText(frame, "score: ", (10, 25),
-                cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 1)
+                cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 1, cv2.LINE_AA)  # 黑
 
     # OpenCV轉PIL
     frame = Image.fromarray(cv2.cvtColor(
         frame, cv2.COLOR_BGR2RGB))
-
-    # 神奇寶貝球
     compose = Image.new('RGBA', (640, 480), (0, 0, 0, 0))
     compose.paste(frame, (0, 0))
-    compose.paste(ball, (0, 0), mask=ball)
+
+    # 神奇寶貝球
+    compose.paste(ball, (ball_x-50, ball_y-50), mask=ball)
+    if(ball_y < 480-50):
+        ball_y += 5
+    else:
+        gameover_flag = 1
 
     # 耳朵
     ear = ear.resize(
@@ -108,30 +108,20 @@ while True:
     compose = cv2.cvtColor(np.asarray(
         compose), cv2.COLOR_RGB2BGR)
 
+    # 遊戲結束
+    if(gameover_flag == 1):
+        cv2.putText(compose, "gameover", (90, 200),
+                    cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 3, cv2.LINE_AA)
+
     cv2.imshow("video", compose)
 
-    # 臉的框框
-    # face = np.zeros((480, 640, 3), np.uint8)
-    # face = cv2.rectangle(
-    #     face, (self.max_x, self.max_y), (self.max_x+self.max_w, self.max_y+self.max_h), (255, 0, 0), 2)
-    # cv2.imshow("face", face)
-
     if cv2.waitKey(1) & 0xFF == ord('q'):
-        cv2.imwrite('captest.jpg', frame)
+        # cv2.imwrite('captest.jpg', frame)
         break
 
 cap.release()
 cv2.destroyAllWindows()
 
-
-# cv2.imshow("gray", gray)
-# cv2.imshow("blurred", blurred)
-# cv2.imshow("binary", binary)
-
-# text = np.zeros((480, 320, 3), np.uint8)
-# cv2.putText(text, "test", (50, 50),
-#             cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 1)
-# imgStack = np.hstack((frame, text))
 
 # add_ball = cv2.addWeighted(frame[0:64, 0:64, :],
 #                            0.1, ball[0:64, 0:64, :], 0.9, 0)
