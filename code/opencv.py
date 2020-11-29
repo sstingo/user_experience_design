@@ -11,12 +11,11 @@ class Camera:
     center_y = 240
 
     def captureFace(self):
-        f = open("data.txt", mode="w")
 
         faceCascade = cv2.CascadeClassifier(
             "./haarcascade_frontalface_default.xml")
-
         cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+
         if not cap.isOpened():
             print("Cannot open camera")
             exit()
@@ -32,6 +31,7 @@ class Camera:
 
             # Read = Grab + Retrieve + Buffer (Block diagram)
             success, frame = cap.retrieve(cap.grab())
+
             # print(success)
             frame = cv2.flip(frame, 1)
 
@@ -57,18 +57,20 @@ class Camera:
             # print(self.max_w * self.max_h)  # 臉的框框大小
 
             # 寫檔
-            f = open("./data.txt", mode="w")
-            f.write(
-                str(self.center_x) + "\n" + str(self.center_y))
-            f.close()
+            # f = open("./data.txt", mode="w")
+            # f.write(
+            #     str(self.center_x) + "\n" + str(self.center_y))
+            # f.close()
 
             # webcam畫面
             frame = cv2.rectangle(
                 frame, (self.max_x, self.max_y), (self.max_x+self.max_w, self.max_y+self.max_h), (255, 0, 0), 2)
+            frame = cv2.rectangle(
+                frame, (int(self.center_x)-5, int(self.center_y)-5), (int(self.center_x)+5, int(self.center_y)+5), (255, 0, 0), -1)  # 中點
             frame = cv2.line(frame, (280, 0), (280, 480),
-                             (0, 0, 255), 2)  # 中間範圍
+                             (0, 0, 255), 2)  # 中間範圍 左
             frame = cv2.line(frame, (360, 0), (360, 480),
-                             (0, 0, 255), 2)  # 中間範圍
+                             (0, 0, 255), 2)  # 中間範圍 右
             cv2.imshow("video", frame)
 
             # 臉的框框

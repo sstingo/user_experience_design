@@ -31,11 +31,11 @@ class Scene:
     ball_a = vec(0, -g, 0)                                   # 小球加速度(向量)
 
     # x軸箭頭
-    x_axis = arrow(axis=vec(1, 0, 0), shaftwidth=0.01)
+    x_axis = arrow(axis=vec(25, 0, 0), shaftwidth=0.1)
     # y軸箭頭
-    y_axis = arrow(axis=vec(0, 1, 0), shaftwidth=0.01)
+    y_axis = arrow(axis=vec(0, 25, 0), shaftwidth=0.1)
     # z軸箭頭
-    z_axis = arrow(axis=vec(0, 0, 1), shaftwidth=0.01)
+    z_axis = arrow(axis=vec(0, 0, 25), shaftwidth=0.1)
 
     # 遊戲開始(小球、玩家移動)
     def start(self):
