@@ -10,7 +10,7 @@ import math
 ball_x = 320                   # 中心x
 ball_y = 50                    # 中心y
 ball_v_x = 0                   # 球的速度(x)
-ball_v_y = 5                   # 球的速度(y)
+ball_v_y = 7                   # 球的速度(y)
 # ball_theta = math.radians(90)  # 球的抛射仰角(弧度)
 
 # 最大框框+它的中心
@@ -108,20 +108,20 @@ while True:
     compose.paste(ball, (ball_x-60, ball_y-60), mask=ball)
     if(max_y-5 <= ball_y+60 and ball_y+60 <= max_y+5 and ball_v_y > 0 and touch_flag == 1):  # 碰到玩家 #下降->上升
         if(max_x <= ball_x and ball_x <= max_x + max_w*0.1):                 # 左 0~0.1
-            ball_v_x = -2
-            ball_v_y = -3
-        elif(max_x + max_w*0.1 <= ball_x and ball_x <= max_x + max_w*0.45):  # 偏左 0.1~0.45
-            ball_v_x = -1
+            ball_v_x = -3
             ball_v_y = -4
+        elif(max_x + max_w*0.1 <= ball_x and ball_x <= max_x + max_w*0.45):  # 偏左 0.1~0.45
+            ball_v_x = -2
+            ball_v_y = -5
         elif(max_x + max_w*0.45 <= ball_x and ball_x <= max_x + max_w*0.55):  # 中 0.45~0.55
             ball_v_x = 0
-            ball_v_y = -5
+            ball_v_y = -7
         elif(max_x + max_w*0.55 <= ball_x and ball_x <= max_x + max_w*0.9):  # 偏右 0.55~0.9
-            ball_v_x = 1
-            ball_v_y = -4
-        else:                                                                # 右 0.9~1
             ball_v_x = 2
-            ball_v_y = -3
+            ball_v_y = -5
+        else:                                                                # 右 0.9~1
+            ball_v_x = 3
+            ball_v_y = -4
         score += 1
     elif(ball_y >= 480-50 or ball_x <= 50 or ball_x >= 640-50):  # 碰到邊框 #遊戲結束
         ball_v_x = 0
