@@ -9,8 +9,9 @@ import math
 # 神奇寶貝球
 ball_x = 320                   # 中心x
 ball_y = 50                    # 中心y
-ball_v = 0                     # 球的速度
-ball_theta = math.radians(90)  # 球的抛射仰角(弧度)
+ball_v_x = 0                   # 球的速度(x)
+ball_v_y = 5                   # 球的速度(y)
+# ball_theta = math.radians(90)  # 球的抛射仰角(弧度)
 
 # 最大框框+它的中心
 max_x = 0
@@ -31,7 +32,10 @@ cap.set(3, 640)   # 寬
 cap.set(4, 480)   # 高
 cap.set(10, 100)  # 亮度
 
-gameover_flag = 0  # 遊戲結束標示
+score = 0  # 分數
+
+touch_flag = 0     # 玩家是否碰的到球標示(1:可以)
+gameover_flag = 0  # 遊戲結束標示(1:遊戲結束)
 
 while True:
     _x = 0
@@ -42,7 +46,7 @@ while True:
     # 神奇寶貝球
     pokemon_ball = 'image/pokemon_ball.png'
     ball = Image.open(pokemon_ball)
-    ball = ball.resize((100, 100))
+    ball = ball.resize((120, 120))
 
     # 皮卡丘耳朵
     pikachu_ear = 'image/ear.png'
@@ -76,25 +80,18 @@ while True:
         frame, (max_x, max_y), (max_x+max_w, max_y+max_h), (255, 0, 0), 2)
     # frame = cv2.rectangle(
     #     frame, (int(center_x)-5, int(center_y)-5), (int(center_x)+5, int(center_y)+5), (255, 0, 0), -1)  # 中點
-    frame = cv2.rectangle(frame, (max_x, max_y), (max_x+max_w,
-                                                  max_y+20), (0, 0, 255), -1)  # 頭頂
+    frame = cv2.rectangle(frame, (max_x, max_y-5), (max_x+max_w,
+                                                    max_y+5), (0, 0, 255), 1)  # 頭頂
 
-    # 分數
-    cv2.putText(frame, "score: ", (10, 25),
-                cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 1, cv2.LINE_AA)  # 黑
+    # 分數# 黑
+    cv2.putText(frame, "score: " + str(score), (10, 25),
+                cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 1, cv2.LINE_AA)
 
     # OpenCV轉PIL
     frame = Image.fromarray(cv2.cvtColor(
         frame, cv2.COLOR_BGR2RGB))
     compose = Image.new('RGBA', (640, 480), (0, 0, 0, 0))
     compose.paste(frame, (0, 0))
-
-    # 神奇寶貝球
-    compose.paste(ball, (ball_x-50, ball_y-50), mask=ball)
-    if(ball_y < 480-50):
-        ball_y += 5
-    else:
-        gameover_flag = 1
 
     # 耳朵
     ear = ear.resize(
@@ -103,6 +100,38 @@ while True:
     ear_y = max_y - ear.size[1]
     if(ear_y >= 0):
         compose.paste(ear, (ear_x, ear_y), mask=ear)
+        touch_flag = 1
+    else:
+        touch_flag = 0
+
+    # 神奇寶貝球
+    compose.paste(ball, (ball_x-60, ball_y-60), mask=ball)
+    if(max_y-5 <= ball_y+60 and ball_y+60 <= max_y+5 and ball_v_y > 0 and touch_flag == 1):  # 碰到玩家 #下降->上升
+        if(max_x <= ball_x and ball_x <= max_x + max_w*0.1):                 # 左 0~0.1
+            ball_v_x = -2
+            ball_v_y = -3
+        elif(max_x + max_w*0.1 <= ball_x and ball_x <= max_x + max_w*0.45):  # 偏左 0.1~0.45
+            ball_v_x = -1
+            ball_v_y = -4
+        elif(max_x + max_w*0.45 <= ball_x and ball_x <= max_x + max_w*0.55):  # 中 0.45~0.55
+            ball_v_x = 0
+            ball_v_y = -5
+        elif(max_x + max_w*0.55 <= ball_x and ball_x <= max_x + max_w*0.9):  # 偏右 0.55~0.9
+            ball_v_x = 1
+            ball_v_y = -4
+        else:                                                                # 右 0.9~1
+            ball_v_x = 2
+            ball_v_y = -3
+        score += 1
+    elif(ball_y >= 480-50 or ball_x <= 50 or ball_x >= 640-50):  # 碰到邊框 #遊戲結束
+        ball_v_x = 0
+        ball_v_y = 0
+        gameover_flag = 1
+    elif(ball_v_y < 0 and ball_y <= 70):  # 上升->下降
+        ball_v_y = -ball_v_y
+    else:
+        ball_y += ball_v_y
+        ball_x += ball_v_x
 
     # PIL轉OpenCV
     compose = cv2.cvtColor(np.asarray(
