@@ -7,7 +7,9 @@ import math
 # print("opencv main")
 
 # 畫面
-scene = 0
+scene = 0  # 0: 倒數, 1: 遊戲中
+i = 3
+j = 5000
 
 # 神奇寶貝球
 ball_x = 320                   # 中心x
@@ -83,12 +85,12 @@ while True:
     #     frame, (max_x, max_y), (max_x+max_w, max_y+max_h), (255, 0, 0), 2)
     # frame = cv2.rectangle(
     #     frame, (int(center_x)-5, int(center_y)-5), (int(center_x)+5, int(center_y)+5), (255, 0, 0), -1)  # 中點
-    frame = cv2.rectangle(frame, (max_x, max_y-5), (max_x+max_w,
-                                                    max_y+5), (0, 255, 255), 1)  # 頭頂 #黃
+    frame = cv2.rectangle(frame, (max_x+10, max_y-5), (max_x+max_w-10,
+                                                       max_y+5), (0, 255, 255), 1)  # 頭頂 #黃
 
     # 分數# 黑
     cv2.putText(frame, "score: " + str(score), (10, 30),
-                cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 1, cv2.LINE_AA)
+                cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 1, cv2.LINE_AA)
 
     # 邊界
     frame = cv2.line(frame, (0, 0), (640, 0),
@@ -117,51 +119,70 @@ while True:
     else:
         touch_flag = 0
 
-    # 神奇寶貝球
-    compose.paste(ball, (ball_x-60, ball_y-60), mask=ball)
-    if(max_y-5 <= ball_y+60 and ball_y+60 <= max_y+5 and ball_v_y > 0 and touch_flag == 1):  # 碰到玩家 #下降->上升
-        if(max_x <= ball_x and ball_x <= max_x + max_w*0.1):                 # 左 0~0.1
-            ball_v_x = -3
-            ball_v_y = -5
-            score += 1
-        elif(max_x + max_w*0.1 <= ball_x and ball_x <= max_x + max_w*0.45):  # 偏左 0.1~0.45
-            ball_v_x = -2
-            ball_v_y = -6
-            score += 1
-        elif(max_x + max_w*0.45 <= ball_x and ball_x <= max_x + max_w*0.55):  # 中 0.45~0.55
+    if(scene == 0):
+        # 神奇寶貝球
+        compose.paste(ball, (ball_x-60, ball_y-60), mask=ball)
+
+        # PIL轉OpenCV
+        compose = cv2.cvtColor(np.asarray(
+            compose), cv2.COLOR_RGB2BGR)
+
+        # 倒數
+        if(i > 0):
+            if(j > 0):
+                cv2.putText(compose, str(i), (300, 220),
+                            cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
+                j -= 1
+            i -= 1
+        else:
+            scene = 1
+
+    elif(scene == 1):
+        # 神奇寶貝球
+        compose.paste(ball, (ball_x-60, ball_y-60), mask=ball)
+        if(max_y-5 <= ball_y+60 and ball_y+60 <= max_y+5 and ball_v_y > 0 and touch_flag == 1):  # 碰到玩家 #下降->上升
+            if(max_x <= ball_x and ball_x <= max_x + max_w*0.1):                 # 左 0~0.1
+                ball_v_x = -3
+                ball_v_y = -5
+                score += 1
+            elif(max_x + max_w*0.1 <= ball_x and ball_x <= max_x + max_w*0.45):  # 偏左 0.1~0.45
+                ball_v_x = -2
+                ball_v_y = -6
+                score += 1
+            elif(max_x + max_w*0.45 <= ball_x and ball_x <= max_x + max_w*0.55):  # 中 0.45~0.55
+                ball_v_x = 0
+                ball_v_y = -7
+                score += 1
+            elif(max_x + max_w*0.55 <= ball_x and ball_x <= max_x + max_w*0.9):  # 偏右 0.55~0.9
+                ball_v_x = 2
+                ball_v_y = -6
+                score += 1
+            elif(max_x + max_w*0.9 <= ball_x and ball_x <= max_x + max_w):       # 右 0.9~1
+                ball_v_x = 3
+                ball_v_y = -5
+                score += 1
+        if(ball_x <= 60 or ball_x >= 640-60):     # 碰到左右 #反彈
+            ball_v_x = -ball_v_x
+            ball_x += ball_v_x
+        elif(ball_y >= 480-60):  # 碰到下框 #遊戲結束
             ball_v_x = 0
-            ball_v_y = -7
-            score += 1
-        elif(max_x + max_w*0.55 <= ball_x and ball_x <= max_x + max_w*0.9):  # 偏右 0.55~0.9
-            ball_v_x = 2
-            ball_v_y = -6
-            score += 1
-        elif(max_x + max_w*0.9 <= ball_x and ball_x <= max_x + max_w):       # 右 0.9~1
-            ball_v_x = 3
-            ball_v_y = -5
-            score += 1
-    if(ball_x <= 60 or ball_x >= 640-60):     # 碰到左右 #反彈
-        ball_v_x = -ball_v_x
-        ball_x += ball_v_x
-    elif(ball_y >= 480-60):  # 碰到下框 #遊戲結束
-        ball_v_x = 0
-        ball_v_y = 0
-        gameover_flag = 1
-    elif(ball_v_y < 0 and ball_y <= 70):  # 碰到上框 # 上升->下降
-        ball_v_y = -ball_v_y
-        ball_y += ball_v_y
-    else:
-        ball_y += ball_v_y
-        ball_x += ball_v_x
+            ball_v_y = 0
+            gameover_flag = 1
+        elif(ball_v_y < 0 and ball_y <= 70):  # 碰到上框 # 上升->下降
+            ball_v_y = -ball_v_y
+            ball_y += ball_v_y
+        else:
+            ball_y += ball_v_y
+            ball_x += ball_v_x
 
-    # PIL轉OpenCV
-    compose = cv2.cvtColor(np.asarray(
-        compose), cv2.COLOR_RGB2BGR)
+        # PIL轉OpenCV
+        compose = cv2.cvtColor(np.asarray(
+            compose), cv2.COLOR_RGB2BGR)
 
-    # 遊戲結束
-    if(gameover_flag == 1):
-        cv2.putText(compose, "Game over", (65, 200),
-                    cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
+        # 遊戲結束
+        if(gameover_flag == 1):
+            cv2.putText(compose, "Game over", (65, 220),
+                        cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
 
     cv2.imshow("video", compose)
 
