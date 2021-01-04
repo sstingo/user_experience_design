@@ -186,9 +186,15 @@ while True:
 
     cv2.imshow("video", compose)
 
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if(cv2.waitKey(1) & 0xFF == ord('q')):  # 跳出
         # cv2.imwrite('captest.jpg', frame)
         break
+    elif(cv2.waitKey(1) & 0xFF == ord(' ')):  # 暫停
+        cv2.putText(compose, "| |", (270, 220),
+                    cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
+        cv2.imshow("video", compose)
+        cv2.waitKey(0)
+
 
 cap.release()
 cv2.destroyAllWindows()
