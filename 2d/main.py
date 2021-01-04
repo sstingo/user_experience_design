@@ -7,7 +7,7 @@ import math
 # print("opencv main")
 
 # 畫面
-scene = 1  # 0: 初始畫面 1: 倒數, 2: 遊戲中, 3: 結束畫面
+scene = 0  # 0: 初始畫面 1: 倒數, 2: 遊戲中, 3: 結束畫面
 i = 3
 j = 5000
 
@@ -192,6 +192,7 @@ while True:
             ball_v_x = 0
             ball_v_y = 0
             gameover_flag = 1
+            scene = 3
         elif(ball_v_y < 0 and ball_y <= 70):  # 碰到上框 # 上升->下降
             ball_v_y = -ball_v_y
             ball_y += ball_v_y
@@ -203,21 +204,45 @@ while True:
         compose = cv2.cvtColor(np.asarray(
             compose), cv2.COLOR_RGB2BGR)
 
-        # 遊戲結束
-        if(gameover_flag == 1):
-            cv2.putText(compose, "Game over", (65, 220),
-                        cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
+        # # 遊戲結束
+        # if(gameover_flag == 1):
+        #     cv2.putText(compose, "Game over", (65, 220),
+        #                 cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
 
         cv2.imshow("video", compose)
 
         if(cv2.waitKey(1) & 0xFF == ord('q')):  # 跳出
             break
         if(cv2.waitKey(1) & 0xFF == ord(' ')):  # 暫停
-            cv2.putText(compose, "| |", (270, 220),
+            cv2.putText(compose, "| |", (270, 285),
                         cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
             cv2.imshow("video", compose)
             cv2.waitKey(0)
 
+    elif(scene == 3):  # 結束畫面
+        # 神奇寶貝球
+        compose.paste(ball, (ball_x-60, ball_y-60), mask=ball)
+
+        # PIL轉OpenCV
+        compose = cv2.cvtColor(np.asarray(
+            compose), cv2.COLOR_RGB2BGR)
+
+        cv2.putText(compose, "Game over", (65, 285),
+                    cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
+        cv2.putText(compose, "press space to restart", (100, 340),
+                    cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 255, 255), 1, cv2.LINE_AA)
+
+        cv2.imshow("video", compose)
+
+        if(cv2.waitKey(1) & 0xFF == ord('q')):  # 跳出
+            break
+        elif(cv2.waitKey(1) & 0xFF == ord(' ')):  # 進遊戲
+            ball_x = 320
+            ball_y = 50
+            ball_v_x = 0
+            ball_v_y = 7
+            score = 0
+            scene = 1
 
 cap.release()
 cv2.destroyAllWindows()
