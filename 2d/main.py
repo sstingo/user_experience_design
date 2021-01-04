@@ -6,6 +6,9 @@ import math
 # if __name__ == '__main__':
 # print("opencv main")
 
+# 畫面
+scene = 0
+
 # 神奇寶貝球
 ball_x = 320                   # 中心x
 ball_y = 50                    # 中心y
@@ -84,8 +87,18 @@ while True:
                                                     max_y+5), (0, 255, 255), 1)  # 頭頂 #黃
 
     # 分數# 黑
-    cv2.putText(frame, "score: " + str(score), (10, 25),
+    cv2.putText(frame, "score: " + str(score), (10, 30),
                 cv2.FONT_HERSHEY_COMPLEX, 1, (255, 0, 0), 1, cv2.LINE_AA)
+
+    # 邊界
+    frame = cv2.line(frame, (0, 0), (640, 0),
+                     (0, 255, 255), 3)  # 上
+    frame = cv2.line(frame, (0, 0), (0, 480),
+                     (0, 255, 255), 3)  # 左
+    frame = cv2.line(frame, (640, 0), (640, 480),
+                     (0, 255, 255), 3)  # 右
+    frame = cv2.line(frame, (0, 480), (640, 480),
+                     (0, 0, 255), 3)  # 下
 
     # OpenCV轉PIL
     frame = Image.fromarray(cv2.cvtColor(
@@ -127,12 +140,16 @@ while True:
             ball_v_x = 3
             ball_v_y = -5
             score += 1
-    if(ball_y >= 480-50 or ball_x <= 50 or ball_x >= 640-50):  # 碰到邊框 #遊戲結束
+    if(ball_x <= 60 or ball_x >= 640-60):     # 碰到左右 #反彈
+        ball_v_x = -ball_v_x
+        ball_x += ball_v_x
+    elif(ball_y >= 480-60):  # 碰到下框 #遊戲結束
         ball_v_x = 0
         ball_v_y = 0
         gameover_flag = 1
-    elif(ball_v_y < 0 and ball_y <= 70):  # 上升->下降
+    elif(ball_v_y < 0 and ball_y <= 70):  # 碰到上框 # 上升->下降
         ball_v_y = -ball_v_y
+        ball_y += ball_v_y
     else:
         ball_y += ball_v_y
         ball_x += ball_v_x
