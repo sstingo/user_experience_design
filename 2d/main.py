@@ -7,7 +7,7 @@ import math
 # print("opencv main")
 
 # 畫面
-scene = 0  # 0: 倒數, 1: 遊戲中
+scene = 1  # 0: 初始畫面 1: 倒數, 2: 遊戲中, 3: 結束畫面
 i = 3
 j = 5000
 
@@ -90,7 +90,7 @@ while True:
 
     # 分數# 黑
     cv2.putText(frame, "score: " + str(score), (10, 30),
-                cv2.FONT_HERSHEY_COMPLEX, 1, (0, 0, 255), 1, cv2.LINE_AA)
+                cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 255), 1, cv2.LINE_AA)
 
     # 邊界
     frame = cv2.line(frame, (0, 0), (640, 0),
@@ -119,7 +119,29 @@ while True:
     else:
         touch_flag = 0
 
-    if(scene == 0):
+    if(scene == 0):  # 初始
+        # 神奇寶貝球
+        compose.paste(ball, (ball_x-60, ball_y-60), mask=ball)
+
+        # PIL轉OpenCV
+        compose = cv2.cvtColor(np.asarray(
+            compose), cv2.COLOR_RGB2BGR)
+
+        cv2.putText(compose, "Pikachu", (80, 220),
+                    cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 255, 255), 4, cv2.LINE_AA)
+        cv2.putText(compose, "Volleyball", (80, 285),
+                    cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 255, 255), 4, cv2.LINE_AA)
+        cv2.putText(compose, "press space to start", (100, 340),
+                    cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 255, 255), 1, cv2.LINE_AA)
+
+        cv2.imshow("video", compose)
+
+        if(cv2.waitKey(1) & 0xFF == ord('q')):  # 跳出
+            break
+        elif(cv2.waitKey(1) & 0xFF == ord(' ')):  # 進遊戲
+            scene = 1
+
+    elif(scene == 1):  # 倒數
         # 神奇寶貝球
         compose.paste(ball, (ball_x-60, ball_y-60), mask=ball)
 
@@ -135,9 +157,11 @@ while True:
                 j -= 1
             i -= 1
         else:
-            scene = 1
+            scene = 2
 
-    elif(scene == 1):
+        cv2.imshow("video", compose)
+
+    elif(scene == 2):  # 遊戲中
         # 神奇寶貝球
         compose.paste(ball, (ball_x-60, ball_y-60), mask=ball)
         if(max_y-5 <= ball_y+60 and ball_y+60 <= max_y+5 and ball_v_y > 0 and touch_flag == 1):  # 碰到玩家 #下降->上升
@@ -184,16 +208,15 @@ while True:
             cv2.putText(compose, "Game over", (65, 220),
                         cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
 
-    cv2.imshow("video", compose)
-
-    if(cv2.waitKey(1) & 0xFF == ord('q')):  # 跳出
-        # cv2.imwrite('captest.jpg', frame)
-        break
-    elif(cv2.waitKey(1) & 0xFF == ord(' ')):  # 暫停
-        cv2.putText(compose, "| |", (270, 220),
-                    cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
         cv2.imshow("video", compose)
-        cv2.waitKey(0)
+
+        if(cv2.waitKey(1) & 0xFF == ord('q')):  # 跳出
+            break
+        if(cv2.waitKey(1) & 0xFF == ord(' ')):  # 暫停
+            cv2.putText(compose, "| |", (270, 220),
+                        cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
+            cv2.imshow("video", compose)
+            cv2.waitKey(0)
 
 
 cap.release()
