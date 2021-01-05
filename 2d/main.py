@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from PIL import Image
 import math
+from datetime import datetime
 
 # if __name__ == '__main__':
 # print("opencv main")
@@ -9,7 +10,7 @@ import math
 # 畫面
 scene = 0  # 0: 初始畫面 1: 倒數, 2: 遊戲中, 3: 結束畫面
 i = 3
-j = 5000
+j = 100000
 
 # 神奇寶貝球
 ball_x = 320                   # 中心x
@@ -218,6 +219,9 @@ while True:
                         cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
             cv2.imshow("video", compose)
             cv2.waitKey(0)
+        if(cv2.waitKey(1) & 0xFF == ord('s')):  # 截圖
+            now = datetime.now().strftime("%Y%m%d%H%M%S")
+            cv2.imwrite('./2d/image/' + now + '.jpg', compose)
 
     elif(scene == 3):  # 結束畫面
         # 神奇寶貝球
