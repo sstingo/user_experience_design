@@ -217,7 +217,7 @@ while True:
             while(1):
                 if(cv2.waitKey(1) & 0xFF == ord(' ')):
                     break
-                if(cv2.waitKey(1) & 0xFF == ord('s')):
+                if(cv2.waitKey(1) & 0xFF == ord('s')):  # 截圖
                     now = datetime.now().strftime("%Y%m%d%H%M%S")
                     cv2.imwrite('./2d/image/' + now + '.jpg', compose)
             # cv2.waitKey(0)
