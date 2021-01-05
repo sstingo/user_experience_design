@@ -141,6 +141,9 @@ while True:
             break
         elif(cv2.waitKey(1) & 0xFF == ord(' ')):  # 進遊戲
             scene = 1
+        if(cv2.waitKey(1) & 0xFF == ord('s')):  # 截圖
+            now = datetime.now().strftime("%Y%m%d%H%M%S")
+            cv2.imwrite('./2d/image/' + now + '.jpg', compose)
 
     elif(scene == 1):  # 倒數
         # 神奇寶貝球
@@ -218,7 +221,13 @@ while True:
             cv2.putText(compose, "| |", (270, 285),
                         cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
             cv2.imshow("video", compose)
-            cv2.waitKey(0)
+            while(1):
+                if(cv2.waitKey(1) & 0xFF == ord(' ')):
+                    break
+                if(cv2.waitKey(1) & 0xFF == ord('s')):
+                    now = datetime.now().strftime("%Y%m%d%H%M%S")
+                    cv2.imwrite('./2d/image/' + now + '.jpg', compose)
+            # cv2.waitKey(0)
         if(cv2.waitKey(1) & 0xFF == ord('s')):  # 截圖
             now = datetime.now().strftime("%Y%m%d%H%M%S")
             cv2.imwrite('./2d/image/' + now + '.jpg', compose)
@@ -240,13 +249,16 @@ while True:
 
         if(cv2.waitKey(1) & 0xFF == ord('q')):  # 跳出
             break
-        elif(cv2.waitKey(1) & 0xFF == ord(' ')):  # 進遊戲
+        if(cv2.waitKey(1) & 0xFF == ord(' ')):  # 進遊戲
             ball_x = 320
             ball_y = 50
             ball_v_x = 0
             ball_v_y = 7
             score = 0
             scene = 1
+        if(cv2.waitKey(1) & 0xFF == ord('s')):  # 截圖
+            now = datetime.now().strftime("%Y%m%d%H%M%S")
+            cv2.imwrite('./2d/image/' + now + '.jpg', compose)
 
 cap.release()
 cv2.destroyAllWindows()
