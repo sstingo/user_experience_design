@@ -17,7 +17,6 @@ ball_x = 320                   # 中心x
 ball_y = 50                    # 中心y
 ball_v_x = 0                   # 球的速度(x)
 ball_v_y = 7                   # 球的速度(y)
-# ball_theta = math.radians(90)  # 球的抛射仰角(弧度)
 
 # 最大框框+它的中心
 max_x = 0
@@ -41,7 +40,6 @@ cap.set(10, 100)  # 亮度
 score = 0  # 分數
 
 touch_flag = 0     # 玩家是否碰的到球標示(1:可以)
-gameover_flag = 0  # 遊戲結束標示(1:遊戲結束)
 
 while True:
     _x = 0
@@ -208,11 +206,6 @@ while True:
         compose = cv2.cvtColor(np.asarray(
             compose), cv2.COLOR_RGB2BGR)
 
-        # # 遊戲結束
-        # if(gameover_flag == 1):
-        #     cv2.putText(compose, "Game over", (65, 220),
-        #                 cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
-
         cv2.imshow("video", compose)
 
         if(cv2.waitKey(1) & 0xFF == ord('q')):  # 跳出
@@ -262,8 +255,3 @@ while True:
 
 cap.release()
 cv2.destroyAllWindows()
-
-
-# add_ball = cv2.addWeighted(frame[0:64, 0:64, :],
-#                            0.1, ball[0:64, 0:64, :], 0.9, 0)
-# frame[0:64, 0:64, :] = add_ball
