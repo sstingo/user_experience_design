@@ -214,7 +214,7 @@ while True:
             cv2.putText(compose, "| |", (270, 285),
                         cv2.FONT_HERSHEY_COMPLEX_SMALL, 4, (0, 0, 255), 4, cv2.LINE_AA)
             cv2.imshow("video", compose)
-            while(1):
+            while(1):  # 繼續
                 if(cv2.waitKey(1) & 0xFF == ord(' ')):
                     break
                 if(cv2.waitKey(1) & 0xFF == ord('s')):  # 截圖
